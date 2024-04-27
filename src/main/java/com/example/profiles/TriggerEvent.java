@@ -1,8 +1,6 @@
 package com.example.profiles;
 
-import com.example.business.logic.ChargePoint;
 import com.example.request.CoreRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.chargetime.ocpp.feature.profile.ClientRemoteTriggerEventHandler;
 import eu.chargetime.ocpp.model.remotetrigger.TriggerMessageConfirmation;
@@ -16,14 +14,13 @@ public class TriggerEvent implements ClientRemoteTriggerEventHandler {
     public TriggerMessageConfirmation handleTriggerMessageRequest(TriggerMessageRequest request){
         System.out.println(request);
         if(request.getRequestedMessage() == TriggerMessageRequestType.BootNotification){
-            CoreRequest.sendBootNotification();
+            CoreRequest.sendBootNotification(3);
             return new TriggerMessageConfirmation(TriggerMessageStatus.Accepted);
         }
         else if(request.getRequestedMessage() == TriggerMessageRequestType.StatusNotification){
-            CoreRequest.sendStatusNotification(new ObjectMapper().createObjectNode().put("status", ChargePoint.getInstance().getStatus()));
+            CoreRequest.sendStatusNotification(3);
             return new TriggerMessageConfirmation(TriggerMessageStatus.Accepted);
         }
-        
         return null;
     }
 }

@@ -24,7 +24,7 @@ public class OcppConnection {
 
     private OcppConnection(){
         this.client = new JSONClient(new ClientCoreProfile(new CoreEvent()), "FIOT-AABBCC");
-        this.client.connect("ws://192.168.41.68:8887" , null);
+        this.client.connect("ws://192.168.100.16:8887" , null);
 
         this.client.addFeatureProfile(new ClientFirmwareManagementProfile(new FirmwareEvent()));
         this.client.addFeatureProfile(new ClientReservationProfile(new ReservationEvent()));

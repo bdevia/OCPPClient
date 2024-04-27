@@ -4,8 +4,6 @@ import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,8 +24,8 @@ public class OcppClient extends ResponseHttpHandler{
         return responseHandler(CoreRequest.sendBootNotification());
     }
 
-    @PostMapping("/send/statusNotification")
-    public CompletableFuture<ResponseEntity<JsonNode>> sendStatusNotification(@RequestBody JsonNode params){
-        return responseHandler(CoreRequest.sendStatusNotification(params));
+    @GetMapping("/send/statusNotification")
+    public CompletableFuture<ResponseEntity<JsonNode>> sendStatusNotification(){
+        return responseHandler(CoreRequest.sendStatusNotification());
     }
 }

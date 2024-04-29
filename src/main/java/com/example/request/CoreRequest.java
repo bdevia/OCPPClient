@@ -1,8 +1,6 @@
 package com.example.request;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -60,23 +58,20 @@ public class CoreRequest extends RequestHandler {
         return sendRequest(request);
     } 
 
-    public CompletableFuture<JsonNode> sendStartTransaction(JsonNode params){
-        if(params.has("idTag") && params.has("meterStart")){
-            String idTag = params.get("idTag").asText();
-            Integer meterStart = params.get("meterStart").asInt();
-
-            StartTransactionRequest request = new StartTransactionRequest(1, idTag, meterStart, ZonedDateTime.now().plusHours(-4));
-            return sendRequest(request).thenApply(result -> {
-                System.out.println(result);
-                return result;
-            });
-
+    public static CompletableFuture<JsonNode> sendStartTransaction(String idTag, Integer reservationId){
+        StartTransactionRequest request = new StartTransactionRequest(1, idTag, 0, ZonedDateTime.now().plusHours(-4));
+        if(reservationId != null){
+            request.setReservationId(reservationId);
         }
-        else{
-            List<String> list = new ArrayList<>(List.of("idTag", "meterStart"));
-            return badRequest(getMessage(list));
-        }
+        return sendRequest(request).thenApply(result -> {
+            System.out.println("StartTransaction: " + result);
+            ChargePoint.getInstance().setStatus("Charging");
+            sendStatusNotification(1);
+            return result;
+        });
     }
+
+    // IMPLEMENTACIONES CON DELAYS
 
     public static void sendBootNotification(Integer delay){
         CompletableFuture.delayedExecutor(delay, TimeUnit.SECONDS).execute(() -> {
@@ -87,6 +82,12 @@ public class CoreRequest extends RequestHandler {
     public static void sendStatusNotification(Integer delay){
         CompletableFuture.delayedExecutor(delay, TimeUnit.SECONDS).execute(() -> {
             sendStatusNotification();
+        });
+    }
+
+    public static void sendStartTransaction(String idTag, Integer reservationId, Integer delay){
+        CompletableFuture.delayedExecutor(delay, TimeUnit.SECONDS).execute(() -> {
+            sendStartTransaction(idTag, reservationId);
         });
     }
 }

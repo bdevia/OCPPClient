@@ -15,7 +15,7 @@ public class Transaction {
     private ZonedDateTime end;
     private Double comsuption;
 
-    public Transaction(String id, String idTag, String parentId, String typeTransaction){
+    public Transaction(String id, String idTag){
         this.id = id;
         this.idTag = idTag;
         this.start = ZonedDateTime.now();

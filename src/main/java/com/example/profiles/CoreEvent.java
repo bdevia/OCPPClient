@@ -63,11 +63,20 @@ public class CoreEvent implements ClientCoreEventHandler{
             System.out.println(request);
             Reservation reservation = ChargePoint.getInstance().getReservation();
             String status = ChargePoint.getInstance().getStatus();
+
             if(status.equals("Available") || (status.equals("Reserved") && reservation.getIdTag().equals(request.getIdTag()))){
-                String newStatus = "Preparing";
-                ChargePoint.getInstance().setStatus(newStatus);
+                ChargePoint.getInstance().setStatus("Preparing");
                 ChargePoint.getInstance().setReservation(null);
+                ChargePoint.getInstance().setFlag(false);
                 CoreRequest.sendStatusNotification(3);
+
+                if(reservation != null){
+                    CoreRequest.sendStartTransaction(request.getIdTag(), reservation.getId(), 30);
+                }
+                else{
+                    CoreRequest.sendStartTransaction(request.getIdTag(), null, 30);
+                }
+
                 return new RemoteStartTransactionConfirmation(RemoteStartStopStatus.Accepted);
             }
             else{

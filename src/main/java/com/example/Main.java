@@ -15,6 +15,6 @@ public class Main {
         System.out.println("API REST running on port "  + enviroment.getProperty("server.port"));
         
         OcppConnection.getInstance();
-        CoreRequest.sendBootNotification(5);
+        CoreRequest.sendBootNotification(3);
     }
 }

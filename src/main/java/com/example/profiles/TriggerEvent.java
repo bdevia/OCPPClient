@@ -14,11 +14,11 @@ public class TriggerEvent implements ClientRemoteTriggerEventHandler {
     public TriggerMessageConfirmation handleTriggerMessageRequest(TriggerMessageRequest request){
         System.out.println(request);
         if(request.getRequestedMessage() == TriggerMessageRequestType.BootNotification){
-            CoreRequest.sendBootNotification(3);
+            CoreRequest.sendBootNotification(1);
             return new TriggerMessageConfirmation(TriggerMessageStatus.Accepted);
         }
         else if(request.getRequestedMessage() == TriggerMessageRequestType.StatusNotification){
-            CoreRequest.sendStatusNotification(3);
+            CoreRequest.sendStatusNotification(1);
             return new TriggerMessageConfirmation(TriggerMessageStatus.Accepted);
         }
         return null;

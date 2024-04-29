@@ -18,13 +18,15 @@ public class ChargePoint {
     private String status;
     private Integer connector;
     private Reservation reservation;
-    private Integer transactionId;
+    private Transaction transaction;
+    private Boolean flag;
 
     private ChargePoint(String status, Integer connector){
         this.status = status;
         this.connector = connector;
         this.reservation = null;
-        this.transactionId = null;
+        this.transaction = null;
+        this.flag = false;
     }
 
     public static ChargePoint getInstance(){
@@ -36,16 +38,18 @@ public class ChargePoint {
 
     public static void expireReservation(ZonedDateTime expiryDate){
         ZonedDateTime now = ZonedDateTime.now().plusHours(-4);
-        now.plusMinutes(-4);
         Duration duration = Duration.between(now, expiryDate);
         long secondsRemaining = duration.getSeconds();
+        System.out.println(secondsRemaining);
 
         CompletableFuture.delayedExecutor(secondsRemaining, TimeUnit.SECONDS)
         .execute(() -> {
-            System.out.println("expira");
-            instance.setStatus("Available");
-            instance.setReservation(null);
-            CoreRequest.sendStatusNotification();
+            if(instance.flag){
+                System.out.println("expira");
+                instance.setStatus("Available");
+                instance.setReservation(null);
+                CoreRequest.sendStatusNotification();
+            }
         });
     }
 }

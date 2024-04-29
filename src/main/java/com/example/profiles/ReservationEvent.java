@@ -20,8 +20,9 @@ public class ReservationEvent implements ClientReservationEventHandler {
         if(ChargePoint.getInstance().getReservation() == null){
             ChargePoint.getInstance().setStatus("Reserved");
             ChargePoint.getInstance().setReservation(new Reservation(request.getReservationId(), request.getIdTag(), request.getExpiryDate()));
+            ChargePoint.getInstance().setFlag(true);
             ChargePoint.expireReservation(request.getExpiryDate());
-            CoreRequest.sendStatusNotification(3);
+            CoreRequest.sendStatusNotification(2);
             return new ReserveNowConfirmation(ReservationStatus.Accepted);
         }
         else{
@@ -36,7 +37,8 @@ public class ReservationEvent implements ClientReservationEventHandler {
         if(reservation != null && reservation.getId().equals(request.getReservationId())){
             ChargePoint.getInstance().setStatus("Available");
             ChargePoint.getInstance().setReservation(null);
-            CoreRequest.sendStatusNotification(3);
+            ChargePoint.getInstance().setFlag(false);
+            CoreRequest.sendStatusNotification(2);
             return new CancelReservationConfirmation(CancelReservationStatus.Accepted);
         }
         else{

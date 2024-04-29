@@ -2,6 +2,7 @@ package com.example.profiles;
 
 import com.example.business.logic.ChargePoint;
 import com.example.business.logic.Reservation;
+import com.example.business.logic.Transaction;
 import com.example.request.CoreRequest;
 
 import eu.chargetime.ocpp.feature.profile.ClientCoreEventHandler;
@@ -60,7 +61,6 @@ public class CoreEvent implements ClientCoreEventHandler{
 
         @Override
         public RemoteStartTransactionConfirmation handleRemoteStartTransactionRequest(RemoteStartTransactionRequest request){
-            System.out.println(request);
             Reservation reservation = ChargePoint.getInstance().getReservation();
             String status = ChargePoint.getInstance().getStatus();
 
@@ -87,7 +87,16 @@ public class CoreEvent implements ClientCoreEventHandler{
         @Override
         public RemoteStopTransactionConfirmation handleRemoteStopTransactionRequest(RemoteStopTransactionRequest request) {
             System.out.println(request);
-            return null; 
+            Transaction transaction = ChargePoint.getInstance().getTransaction();
+            if(transaction != null && transaction.getId().equals(request.getTransactionId())){
+                ChargePoint.getInstance().setStatus("Finishing");
+                CoreRequest.sendStatusNotification(1);
+                CoreRequest.sendStopTransaction(20);
+                return new RemoteStopTransactionConfirmation(RemoteStartStopStatus.Accepted);
+            }
+            else{
+                return new RemoteStopTransactionConfirmation(RemoteStartStopStatus.Rejected);
+            } 
         }
 
         @Override

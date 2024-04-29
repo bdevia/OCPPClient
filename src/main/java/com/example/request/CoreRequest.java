@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import com.example.business.logic.ChargePoint;
+import com.example.business.logic.Transaction;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import eu.chargetime.ocpp.model.core.BootNotificationRequest;
@@ -12,6 +13,7 @@ import eu.chargetime.ocpp.model.core.ChargePointErrorCode;
 import eu.chargetime.ocpp.model.core.ChargePointStatus;
 import eu.chargetime.ocpp.model.core.StartTransactionRequest;
 import eu.chargetime.ocpp.model.core.StatusNotificationRequest;
+import eu.chargetime.ocpp.model.core.StopTransactionRequest;
 
 public class CoreRequest extends RequestHandler {
 
@@ -66,9 +68,24 @@ public class CoreRequest extends RequestHandler {
         return sendRequest(request).thenApply(result -> {
             System.out.println("StartTransaction: " + result);
             ChargePoint.getInstance().setStatus("Charging");
+            ChargePoint.getInstance().setTransaction(new Transaction(result.get("transactionId").asInt(), idTag));
             sendStatusNotification(1);
             return result;
         });
+    }
+
+    public static CompletableFuture<JsonNode> sendStopTransaction(){
+        Transaction transaction = ChargePoint.getInstance().getTransaction();
+        StopTransactionRequest request = new StopTransactionRequest(1000, ZonedDateTime.now().plusHours(-4), transaction.getId());
+
+        return sendRequest(request).thenApply(result -> {
+            System.out.println("StopTransaction: " + result);
+            ChargePoint.getInstance().setStatus("Available");
+            ChargePoint.getInstance().setTransaction(null);
+            sendStatusNotification(1);
+            return result;
+        });
+
     }
 
     // IMPLEMENTACIONES CON DELAYS
@@ -88,6 +105,12 @@ public class CoreRequest extends RequestHandler {
     public static void sendStartTransaction(String idTag, Integer reservationId, Integer delay){
         CompletableFuture.delayedExecutor(delay, TimeUnit.SECONDS).execute(() -> {
             sendStartTransaction(idTag, reservationId);
+        });
+    }
+
+    public static void sendStopTransaction(Integer delay){
+        CompletableFuture.delayedExecutor(delay, TimeUnit.SECONDS).execute(() -> {
+            sendStopTransaction();
         });
     }
 }

@@ -9,13 +9,13 @@ import lombok.Setter;
 @Getter
 public class Transaction {
     
-    private final String id;
+    private final Integer id;
     private final String idTag; 
     private ZonedDateTime start;
     private ZonedDateTime end;
     private Double comsuption;
 
-    public Transaction(String id, String idTag){
+    public Transaction(Integer id, String idTag){
         this.id = id;
         this.idTag = idTag;
         this.start = ZonedDateTime.now();

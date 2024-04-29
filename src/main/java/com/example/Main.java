@@ -16,5 +16,6 @@ public class Main {
         
         OcppConnection.getInstance();
         CoreRequest.sendBootNotification(3);
+        
     }
 }

@@ -77,6 +77,7 @@ public class CoreRequest extends RequestHandler {
     public static CompletableFuture<JsonNode> sendStopTransaction(){
         Transaction transaction = ChargePoint.getInstance().getTransaction();
         StopTransactionRequest request = new StopTransactionRequest(1000, ZonedDateTime.now().plusHours(-4), transaction.getId());
+        request.setIdTag(transaction.getIdTag());
 
         return sendRequest(request).thenApply(result -> {
             System.out.println("StopTransaction: " + result);

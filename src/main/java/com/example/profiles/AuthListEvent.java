@@ -5,6 +5,7 @@ import eu.chargetime.ocpp.model.localauthlist.GetLocalListVersionConfirmation;
 import eu.chargetime.ocpp.model.localauthlist.GetLocalListVersionRequest;
 import eu.chargetime.ocpp.model.localauthlist.SendLocalListConfirmation;
 import eu.chargetime.ocpp.model.localauthlist.SendLocalListRequest;
+import eu.chargetime.ocpp.model.localauthlist.UpdateStatus;
 
 public class AuthListEvent implements ClientLocalAuthListEventHandler{
 
@@ -15,8 +16,9 @@ public class AuthListEvent implements ClientLocalAuthListEventHandler{
     }
 
     @Override
-    public SendLocalListConfirmation handleSendLocalListRequest(SendLocalListRequest var1){
-        System.out.println(var1);
-        return null;
+    public SendLocalListConfirmation handleSendLocalListRequest(SendLocalListRequest request){
+        System.out.println(request);
+        System.out.println(request.getListVersion());
+        return new SendLocalListConfirmation(UpdateStatus.Accepted);
     }
 }

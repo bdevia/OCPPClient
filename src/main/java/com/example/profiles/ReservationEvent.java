@@ -22,7 +22,7 @@ public class ReservationEvent implements ClientReservationEventHandler {
             ChargePoint.getInstance().setReservation(new Reservation(request.getReservationId(), request.getIdTag(), request.getExpiryDate()));
             ChargePoint.getInstance().setFlag(true);
             ChargePoint.expireReservation(request.getExpiryDate());
-            CoreRequest.sendStatusNotification(2);
+            CoreRequest.sendStatusNotification(1);
             return new ReserveNowConfirmation(ReservationStatus.Accepted);
         }
         else{

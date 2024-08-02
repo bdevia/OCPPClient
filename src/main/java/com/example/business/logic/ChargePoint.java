@@ -20,6 +20,7 @@ public class ChargePoint {
     private Reservation reservation;
     private Transaction transaction;
     private Boolean flag;
+    private String statusFirmware;
 
     private ChargePoint(String status, Integer connector){
         this.status = status;
@@ -27,6 +28,7 @@ public class ChargePoint {
         this.reservation = null;
         this.transaction = null;
         this.flag = false;
+        this.statusFirmware = "Idle";
     }
 
     public static ChargePoint getInstance(){
@@ -52,4 +54,5 @@ public class ChargePoint {
             }
         });
     }
+
 }

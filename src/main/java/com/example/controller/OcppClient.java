@@ -28,4 +28,9 @@ public class OcppClient extends ResponseHttpHandler{
     public CompletableFuture<ResponseEntity<JsonNode>> sendStatusNotification(){
         return responseHandler(CoreRequest.sendStatusNotification());
     }
+
+    @GetMapping("/send/authorize")
+    public CompletableFuture<ResponseEntity<JsonNode>> sendAuthorize(){
+        return responseHandler(CoreRequest.sendAuthorize());
+    }
 }

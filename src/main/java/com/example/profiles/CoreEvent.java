@@ -71,10 +71,10 @@ public class CoreEvent implements ClientCoreEventHandler{
                 CoreRequest.sendStatusNotification(3);
 
                 if(reservation != null){
-                    CoreRequest.sendStartTransaction(request.getIdTag(), reservation.getId(), 30);
+                    CoreRequest.sendStartTransaction(request.getIdTag(), reservation.getId(), 8);
                 }
                 else{
-                    CoreRequest.sendStartTransaction(request.getIdTag(), null, 30);
+                    CoreRequest.sendStartTransaction(request.getIdTag(), null, 8);
                 }
 
                 return new RemoteStartTransactionConfirmation(RemoteStartStopStatus.Accepted);

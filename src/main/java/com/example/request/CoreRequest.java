@@ -8,6 +8,7 @@ import com.example.business.logic.ChargePoint;
 import com.example.business.logic.Transaction;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import eu.chargetime.ocpp.model.core.AuthorizeRequest;
 import eu.chargetime.ocpp.model.core.BootNotificationRequest;
 import eu.chargetime.ocpp.model.core.ChargePointErrorCode;
 import eu.chargetime.ocpp.model.core.ChargePointStatus;
@@ -20,6 +21,26 @@ public class CoreRequest extends RequestHandler {
     public static CompletableFuture<JsonNode> sendBootNotification(){
         BootNotificationRequest request = new BootNotificationRequest("Fleischmann IoT", "testing-client");
         return sendRequest(request);
+    }
+
+    public static CompletableFuture<JsonNode> sendAuthorize(){
+        String idTag = "8BA12EF1A";
+        AuthorizeRequest request = new AuthorizeRequest(idTag);
+        return sendRequest(request).thenApply(result -> {
+            if(result.get("status").asText().equals("Accepted}")){
+                if(ChargePoint.getInstance().getTransaction() == null){
+                    ChargePoint.getInstance().setStatus("Preparing");
+                    sendStatusNotification(1);
+                    sendStartTransaction(idTag, null, 20);
+                }
+                else{
+                    ChargePoint.getInstance().setStatus("Finishing");
+                    sendStatusNotification(1);
+                    sendStopTransaction(20);
+                }
+            }
+            return result;
+        });
     }
 
     public static CompletableFuture<JsonNode> sendStatusNotification(){
